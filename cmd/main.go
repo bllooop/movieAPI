@@ -7,14 +7,13 @@ import (
 	handler "movieAPI/pkg/handlers"
 	"movieAPI/pkg/repository"
 	"movieAPI/pkg/service"
-	"os"
 
 	_ "github.com/lib/pq"
 )
 
 func main() {
-	password := os.Getenv("DB_PASSWORD")
-	database := flag.String("databas", "postgres://admin:"+password+"@localhost:5432/movies?sslmode=disable", "Подключение к PSQL")
+	//password := os.Getenv("DB_PASSWORD")
+	database := flag.String("databas", "postgres://postgres:54321@localhost:5436/postgres?sslmode=disable", "Подключение к PSQL")
 	dbpool, err := repository.NewPostgresDB(*database)
 	if err != nil {
 		log.Fatal(err)

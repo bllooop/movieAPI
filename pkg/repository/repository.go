@@ -1,14 +1,26 @@
 package repository
 
-import "database/sql"
+import (
+	"database/sql"
+	movieapi "movieAPI"
+)
 
-type Home interface {
+type Authorization interface {
+	CreateUser(user movieapi.User) (int, error)
+	SignUser(username, password string) (int, error)
+}
+type Movies interface {
+	ListMovies() (movieapi.User, error)
 }
 
 type Repository struct {
-	Home
+	Authorization
+	Movies
 }
 
 func NewRepository(db *sql.DB) *Repository {
-	return &Repository{}
+	return &Repository{
+		Authorization: NewAuthPostgres(db),
+		Movies:        NewMoviePostgres(db),
+	}
 }
