@@ -1,21 +1,22 @@
 package service
 
 import (
+	movieapi "movieAPI"
 	"movieAPI/pkg/repository"
 )
 
 type MovieService struct {
-	repo repository.Movies
+	repo repository.MovieList
 }
 
-func NewMovieService(repo repository.Movies) *MovieService {
+func NewMovieService(repo repository.MovieList) *MovieService {
 	return &MovieService{repo: repo}
 }
 
-func (s *MovieService) ListMovies() error {
-	_, err := s.repo.ListMovies()
-	if err != nil {
-		return err
-	}
-	return nil
+func (s *MovieService) Create(role int, list movieapi.MovieList) (int, error) {
+	return s.repo.Create(role, list)
+}
+
+func (s *MovieService) ListMovies() ([]movieapi.MovieList, error) {
+	return s.repo.ListMovies()
 }

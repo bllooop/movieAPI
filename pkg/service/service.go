@@ -9,17 +9,27 @@ type Authorization interface {
 	CreateUser(user movieapi.User) (int, error)
 	SignUser(username, password string) (int, error)
 }
-type Movies interface {
-	ListMovies() error
+type MovieList interface {
+	Create(role int, list movieapi.MovieList) (int, error)
+	ListMovies() ([]movieapi.MovieList, error)
+	//GetByName(movieName string) (movieapi.MovieList, error)
+	//Delete()
+	//Update()
+}
+type ActorList interface {
+	CreateActor(role int, list movieapi.ActorList) (int, error)
+	ListActors() ([]movieapi.ActorList, error)
 }
 type Service struct {
 	Authorization
-	Movies
+	MovieList
+	ActorList
 }
 
 func NewService(repos *repository.Repository) *Service {
 	return &Service{
 		Authorization: NewAuthService(repos.Authorization),
-		Movies:        NewMovieService(repos.Movies),
+		MovieList:     NewMovieService(repos.MovieList),
+		ActorList:     NewActorService(repos.ActorList),
 	}
 }
