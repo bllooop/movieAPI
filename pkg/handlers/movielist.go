@@ -41,3 +41,17 @@ func (h *Handler) getAllMoviesList(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Fprintf(w, "%v", res)
 }
+
+func (h *Handler) findMovieByName(w http.ResponseWriter, r *http.Request) {
+	name := r.URL.Query().Get("id")
+	list, err := h.services.MovieList.GetByName(name)
+	if err != nil {
+		servErr(w, err)
+	}
+
+	res, err := JSONStruct(list)
+	if err != nil {
+		servErr(w, err)
+	}
+	fmt.Fprintf(w, "%v", res)
+}

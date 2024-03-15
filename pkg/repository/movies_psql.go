@@ -49,3 +49,24 @@ func (r *MoviePostgres) ListMovies() ([]movieapi.MovieList, error) {
 	}
 	return lists, nil
 }
+
+func (r *MoviePostgres) GetByName(movieName string) ([]movieapi.MovieList, error) {
+	var list []movieapi.MovieList
+	res, err := r.db.Query("SELECT id,title,rating,date FROM movielist WHERE title LIKE '%' || $1 || '%'", movieName)
+	if err != nil {
+		return nil, err
+	}
+	defer res.Close()
+	for res.Next() {
+		k := movieapi.MovieList{}
+		err := res.Scan(&k.Id, &k.Title, &k.Rating, &k.Date)
+		if err != nil {
+			return nil, err
+		}
+		list = append(list, k)
+	}
+	if err = res.Err(); err != nil {
+		return nil, err
+	}
+	return list, nil
+}

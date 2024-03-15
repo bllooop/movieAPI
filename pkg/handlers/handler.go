@@ -20,5 +20,6 @@ func (h *Handler) InitRoutes() *http.ServeMux {
 	mux.HandleFunc("/movies/add", h.createMovielist)
 	mux.HandleFunc("/actors", h.getAllActorList)
 	mux.HandleFunc("/actors/add", h.createActorlist)
+	mux.HandleFunc("/movie", h.findMovieByName)
 	return mux
 }
