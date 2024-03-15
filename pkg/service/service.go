@@ -13,12 +13,14 @@ type MovieList interface {
 	Create(role int, list movieapi.MovieList) (int, error)
 	ListMovies(order string) ([]movieapi.MovieList, error)
 	GetByName(movieName string) ([]movieapi.MovieList, error)
-	//Delete()
-	//Update()
+	Delete(role, movId int) error
+	Update(role, movId int, input movieapi.UpdateMovieListInput) error
 }
 type ActorList interface {
 	CreateActor(role int, list movieapi.ActorList) (int, error)
 	ListActors() ([]movieapi.ActorList, error)
+	Delete(role, actorId int) error
+	Update(role, actorId int, input movieapi.UpdateActorListInput) error
 }
 type Service struct {
 	Authorization

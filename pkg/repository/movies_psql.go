@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	movieapi "movieAPI"
+	"strings"
 )
 
 type MoviePostgres struct {
@@ -72,4 +73,35 @@ func (r *MoviePostgres) GetByName(movieName string) ([]movieapi.MovieList, error
 		return nil, err
 	}
 	return list, nil
+}
+func (r *MoviePostgres) Update(role, movId int, input movieapi.UpdateMovieListInput) error {
+	setValues := make([]string, 0)
+	args := make([]interface{}, 0)
+	argId := 1
+	if input.Title != nil {
+		setValues = append(setValues, fmt.Sprintf("title=$%d", argId))
+		args = append(args, *input.Title)
+		argId++
+	}
+	if input.Rating != nil {
+		setValues = append(setValues, fmt.Sprintf("rating=$%d", argId))
+		args = append(args, *input.Rating)
+		argId++
+	}
+	if input.Date != nil {
+		setValues = append(setValues, fmt.Sprintf("date=$%d", argId))
+		args = append(args, *input.Date)
+		argId++
+	}
+	setQuery := strings.Join(setValues, ", ")
+	query := fmt.Sprintf("UPDATE %s SET %s WHERE id=$%d", movieListTable, setQuery, argId)
+	args = append(args, movId)
+	_, err := r.db.Exec(query, args...)
+	return err
+}
+
+func (r *MoviePostgres) Delete(role, movId int) error {
+	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", movieListTable)
+	_, err := r.db.Exec(query, movId)
+	return err
 }

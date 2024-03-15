@@ -7,6 +7,10 @@ import (
 	"runtime/debug"
 )
 
+type statusResponse struct {
+	Status string `json: status`
+}
+
 func servErr(w http.ResponseWriter, err error) {
 	trace := fmt.Sprintf("%s\n%s", err.Error(), debug.Stack())
 	log.Println(trace)

@@ -13,11 +13,15 @@ type MovieList interface {
 	Create(role int, list movieapi.MovieList) (int, error)
 	ListMovies(order string) ([]movieapi.MovieList, error)
 	GetByName(movieName string) ([]movieapi.MovieList, error)
+	Update(role, movId int, input movieapi.UpdateMovieListInput) error
+	Delete(role, movId int) error
 }
 
 type ActorList interface {
 	CreateActor(role int, list movieapi.ActorList) (int, error)
 	ListActors() ([]movieapi.ActorList, error)
+	Update(role, actorId int, input movieapi.UpdateActorListInput) error
+	Delete(role, actorId int) error
 }
 type Repository struct {
 	Authorization
