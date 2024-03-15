@@ -30,7 +30,8 @@ func (h *Handler) createMovielist(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) getAllMoviesList(w http.ResponseWriter, r *http.Request) {
-	lists, err := h.services.ListMovies()
+	order := r.URL.Query().Get("order")
+	lists, err := h.services.ListMovies(order)
 	if err != nil {
 		servErr(w, err)
 	}
@@ -43,7 +44,7 @@ func (h *Handler) getAllMoviesList(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) findMovieByName(w http.ResponseWriter, r *http.Request) {
-	name := r.URL.Query().Get("id")
+	name := r.URL.Query().Get("name")
 	list, err := h.services.MovieList.GetByName(name)
 	if err != nil {
 		servErr(w, err)

@@ -11,7 +11,7 @@ type Authorization interface {
 }
 type MovieList interface {
 	Create(role int, list movieapi.MovieList) (int, error)
-	ListMovies() ([]movieapi.MovieList, error)
+	ListMovies(order string) ([]movieapi.MovieList, error)
 	GetByName(movieName string) ([]movieapi.MovieList, error)
 }
 

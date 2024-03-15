@@ -28,9 +28,12 @@ func (r *MoviePostgres) Create(role int, list movieapi.MovieList) (int, error) {
 	}
 	return id, tr.Commit()
 }
-func (r *MoviePostgres) ListMovies() ([]movieapi.MovieList, error) {
+func (r *MoviePostgres) ListMovies(order string) ([]movieapi.MovieList, error) {
 	var lists []movieapi.MovieList
-	query := fmt.Sprintf(`SELECT id,title,rating,date FROM %s ORDER BY rating DESC`, movieListTable)
+	if order == "" {
+		order = "rating"
+	}
+	query := fmt.Sprintf(`SELECT id,title,rating,date FROM %s ORDER BY %s DESC`, movieListTable, order)
 	res, err := r.db.Query(query)
 	if err != nil {
 		return nil, err
