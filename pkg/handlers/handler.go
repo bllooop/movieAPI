@@ -14,16 +14,17 @@ func NewHandler(services *service.Service) *Handler {
 }
 func (h *Handler) InitRoutes() *http.ServeMux {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/auth/sign-up", h.signUp)
-	mux.HandleFunc("/auth/sign-in", h.signIn)
-	mux.HandleFunc("/movies", h.getAllMoviesList)
-	mux.HandleFunc("/movies/add", h.createMovielist)
-	mux.HandleFunc("/movies/update", h.updateMovieList)
-	mux.HandleFunc("/movies/delete", h.deleteMovieList)
-	mux.HandleFunc("/actors", h.getAllActorList)
-	mux.HandleFunc("/actors/add", h.createActorlist)
-	mux.HandleFunc("/movie", h.findMovieByName)
-	mux.HandleFunc("/actors/update", h.updateActorList)
-	mux.HandleFunc("/actors/delete", h.deleteActorList)
+	mux.HandleFunc("/api/auth/sign-up", h.signUp)
+	mux.HandleFunc("/api/auth/sign-in", h.signIn)
+	mux.HandleFunc("/api/movies", AuthMiddleware(h.getAllMoviesList))
+	mux.HandleFunc("/api/movies/add", AuthMiddleware(h.createMovielist))
+	mux.HandleFunc("/api/movies/update", AuthMiddleware(h.updateMovieList))
+	mux.HandleFunc("/api/movies/delete", AuthMiddleware(h.deleteMovieList))
+	mux.HandleFunc("/api/actors", AuthMiddleware(h.getAllActorList))
+	mux.HandleFunc("/api/actors/add", AuthMiddleware(h.createActorlist))
+	mux.HandleFunc("/api/movie", AuthMiddleware(h.findMovieByName))
+	mux.HandleFunc("/api/actors/update", AuthMiddleware(h.updateActorList))
+	mux.HandleFunc("/api/actors/delete", AuthMiddleware(h.deleteActorList))
+	//wrappedMux := h.authCheck(mux)
 	return mux
 }

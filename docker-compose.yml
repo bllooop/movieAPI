@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  movieapi:
+    build: ./
+    command: ./wait-for-postgres.sh db ./movieapi
+    env_file:
+      - .env
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    environment:
+      - DB_PASSWORD=54321
+  db:
+    restart: always
+    image: postgres:latest
+    volumes: 
+      -  postgres-db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=54321
+    ports:
+      - 5436:5432
+volumes:
+  postgres-db:

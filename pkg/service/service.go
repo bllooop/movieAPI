@@ -3,11 +3,15 @@ package service
 import (
 	movieapi "movieAPI"
 	"movieAPI/pkg/repository"
+
+	"github.com/golang-jwt/jwt"
 )
 
 type Authorization interface {
 	CreateUser(user movieapi.User) (int, error)
-	SignUser(username, password string) (int, error)
+	SignUser(username, password string) (movieapi.User, error)
+	ParseToken(accesstok string) (*jwt.Token, error)
+	//GetUserRole()
 }
 type MovieList interface {
 	Create(role int, list movieapi.MovieList) (int, error)

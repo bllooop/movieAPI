@@ -35,7 +35,6 @@ func (h *Handler) getAllActorList(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		servErr(w, err)
 	}
-
 	res, err := JSONStruct(lists)
 	if err != nil {
 		servErr(w, err)

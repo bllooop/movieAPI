@@ -16,7 +16,7 @@ func NewAuthPostgres(db *sql.DB) *AuthPostgres {
 
 func (r *AuthPostgres) CreateUser(user movieapi.User) (int, error) {
 	var id int
-	query := fmt.Sprintf(`INSERT INTO %s (username,password,role) VALUES ($1,$2,$3) RETURNING id`, "userlist")
+	query := fmt.Sprintf(`INSERT INTO %s (username,password,role) VALUES ($1,$2,$3) RETURNING id`, userListTable)
 	row := r.db.QueryRow(query, user.UserName, user.Password, 1)
 	if err := row.Scan(&id); err != nil {
 		return 0, err
@@ -24,11 +24,18 @@ func (r *AuthPostgres) CreateUser(user movieapi.User) (int, error) {
 	return id, nil
 }
 
-func (r *AuthPostgres) SignUser(username, password string) (int, error) {
-	//var user movieapi.User
-	var id int
-	query := fmt.Sprintf(`SELECT id FROM %s WHERE username=$1 AND password=$2`, "userlist")
+func (r *AuthPostgres) SignUser(username, password string) (movieapi.User, error) {
+	var user movieapi.User
+	query := fmt.Sprintf(`SELECT id,username,password,role FROM %s WHERE username=$1 AND password=$2`, userListTable)
 	res := r.db.QueryRow(query, username, password)
-	err := res.Scan(&id)
-	return id, err
+	err := res.Scan(&user.Id, &user.UserName, &user.Password, &user.Role)
+	return user, err
 }
+
+/*func (r *AuthPostgres) GetUserRole(username string) (string, error) {
+	var role string
+	query := fmt.Sprintf(`SELECT role FROM %s WHERE username=$1`, userListTable)
+	res := r.db.QueryRow(query, username)
+	err := res.Scan(&role)
+	return role, err
+}*/

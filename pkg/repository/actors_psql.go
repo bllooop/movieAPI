@@ -31,7 +31,7 @@ func (r *ActorPostgres) CreateActor(role int, list movieapi.ActorList) (int, err
 }
 func (r *ActorPostgres) ListActors() ([]movieapi.ActorList, error) {
 	var lists []movieapi.ActorList
-	query := fmt.Sprintf(`SELECT id,title,rating,date FROM %s ORDER BY rating DESC`, actorListTable)
+	query := fmt.Sprintf(`SELECT id,name,gender,date FROM %s`, actorListTable)
 	res, err := r.db.Query(query)
 	if err != nil {
 		return nil, err

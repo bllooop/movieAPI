@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
 )
 
 const (
@@ -12,9 +13,15 @@ const (
 	movieListTable   = "movielist"
 	movListItemTable = "movlistitem"
 )
+const (
+	host   = "db"
+	port   = "5436"
+	user   = "postgres"
+	dbname = "postgres"
+)
 
-func NewPostgresDB(database string) (*sql.DB, error) {
-	db, err := sql.Open("postgres", database)
+func NewPostgresDB(password string) (*sql.DB, error) {
+	db, err := sql.Open("postgres", fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s", host, port, user, password, dbname))
 	if err != nil {
 		return nil, err
 	}

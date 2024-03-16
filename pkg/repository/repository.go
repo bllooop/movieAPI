@@ -7,7 +7,8 @@ import (
 
 type Authorization interface {
 	CreateUser(user movieapi.User) (int, error)
-	SignUser(username, password string) (int, error)
+	SignUser(username, password string) (movieapi.User, error)
+	// GetUserRole()
 }
 type MovieList interface {
 	Create(role int, list movieapi.MovieList) (int, error)

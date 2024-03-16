@@ -48,16 +48,28 @@ func (h *Handler) signIn(w http.ResponseWriter, r *http.Request) {
 		servErr(w, err)
 		return
 	}
-	id, err := h.services.Authorization.SignUser(input.Username, input.Password)
+	user, err := h.services.Authorization.SignUser(input.Username, input.Password)
 	if err != nil {
 		clientErr(w, http.StatusBadRequest)
 	}
-	res, err := JSONStruct(map[string]interface{}{
-		"id": id,
-	})
+
+	token, err := createAndSetAuthCookie(user)
 	if err != nil {
-		servErr(w, err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
-	http.Redirect(w, r, "/movies/", http.StatusSeeOther)
-	fmt.Fprintf(w, "%v", res)
+	http.SetCookie(w, &http.Cookie{
+		Name:  "Authorization",
+		Value: token,
+	})
+	r.Header.Set("Authorization", "Bearer "+token)
+	json.NewEncoder(w).Encode(map[string]string{"token": token})
+}
+
+func createAndSetAuthCookie(user movieapi.User) (string, error) {
+	token, err := CreateToken(user)
+	if err != nil {
+		return "", err
+	}
+	return token, nil
 }

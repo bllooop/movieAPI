@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"log"
 	movieapi "movieAPI"
 	handler "movieAPI/pkg/handlers"
@@ -12,9 +11,9 @@ import (
 )
 
 func main() {
-	//password := os.Getenv("DB_PASSWORD")
-	database := flag.String("databas", "postgres://postgres:54321@localhost:5436/postgres?sslmode=disable", "Подключение к PSQL")
-	dbpool, err := repository.NewPostgresDB(*database)
+	password := "54321"
+	//database := flag.String("databas", "postgres://postgres:54321@localhost:5432/postgres?sslmode=disable", "Подключение к PSQL")
+	dbpool, err := repository.NewPostgresDB(password)
 	if err != nil {
 		log.Fatal(err)
 	}
