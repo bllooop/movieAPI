@@ -2,24 +2,26 @@ version: '3.8'
 
 services:
   movieapi:
-    build: ./
-    command: ./wait-for-postgres.sh db ./movieapi
-    env_file:
-      - .env
+    build: 
+      context: .
+      dockerfile: Dockerfile  
     ports:
-      - 8080:8080
+      - 8000:8000
     depends_on:
       - db
     environment:
       - DB_PASSWORD=54321
+      
   db:
+    container_name: db
     restart: always
     image: postgres:latest
     volumes: 
-      -  postgres-db:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=54321
     ports:
       - 5436:5432
+
 volumes:
-  postgres-db:
+  pgdata:

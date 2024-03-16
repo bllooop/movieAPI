@@ -11,9 +11,9 @@ import (
 )
 
 func main() {
-	password := "54321"
-	//database := flag.String("databas", "postgres://postgres:54321@localhost:5432/postgres?sslmode=disable", "Подключение к PSQL")
-	dbpool, err := repository.NewPostgresDB(password)
+	//password := "54321"
+	//database := flag.String("databas", "postgres://postgres:54321@localhost:5433/postgres?sslmode=disable", "Подключение к PSQL")
+	dbpool, err := repository.NewPostgresDB()
 	if err != nil {
 		log.Fatal(err)
 	}
