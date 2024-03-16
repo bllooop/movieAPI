@@ -3,7 +3,7 @@ package repository
 import (
 	"database/sql"
 	"fmt"
-	movieapi "movieAPI"
+	movieapi "movieapi"
 )
 
 type AuthPostgres struct {
@@ -17,7 +17,7 @@ func NewAuthPostgres(db *sql.DB) *AuthPostgres {
 func (r *AuthPostgres) CreateUser(user movieapi.User) (int, error) {
 	var id int
 	query := fmt.Sprintf(`INSERT INTO %s (username,password,role) VALUES ($1,$2,$3) RETURNING id`, userListTable)
-	row := r.db.QueryRow(query, user.UserName, user.Password, 1)
+	row := r.db.QueryRow(query, user.UserName, user.Password, user.Role)
 	if err := row.Scan(&id); err != nil {
 		return 0, err
 	}

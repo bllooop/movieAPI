@@ -1,4 +1,4 @@
-module movieAPI
+module movieapi
 
 go 1.20
 

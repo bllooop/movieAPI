@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"movieAPI/pkg/service"
+	"movieapi/pkg/service"
 	"net/http"
 )
 

@@ -4,8 +4,8 @@ import (
 	"crypto/sha1"
 	"errors"
 	"fmt"
-	movieapi "movieAPI"
-	"movieAPI/pkg/repository"
+	movieapi "movieapi"
+	"movieapi/pkg/repository"
 	"time"
 
 	"github.com/golang-jwt/jwt"

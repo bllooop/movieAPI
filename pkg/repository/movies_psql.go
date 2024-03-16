@@ -3,7 +3,7 @@ package repository
 import (
 	"database/sql"
 	"fmt"
-	movieapi "movieAPI"
+	movieapi "movieapi"
 	"strings"
 )
 

@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "cmd"
+		},
+		{
+			"path": "pkg"
+		},
+		{
+			"path": "schema"
+		}
+	],
+	"settings": {}
+}

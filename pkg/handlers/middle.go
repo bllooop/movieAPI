@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"fmt"
-	movieapi "movieAPI"
+	movieapi "movieapi"
 	"net/http"
 	"strings"
 	"time"
@@ -10,30 +10,16 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
+const (
+	authorizationHeader = "Authorization"
+	roleCtx             = "userRole"
+)
+
 var jwtKey = []byte("secret_key")
 
-/*
-	func (h *Handler) shopIdentity(c *gin.Context) {
-		header := c.GetHeader(authorizationHeader)
-		if header == "" {
-			newError(c, http.StatusUnauthorized, "empty auth header")
-			return
-		}
-		headerSplit := strings.Split(header, " ")
-		if len(headerSplit) != 2 {
-			newError(c, http.StatusUnauthorized, "invalid auth header")
-			return
-		}
-		shopId, err := h.services.Authorization.ParseToken(headerSplit[1])
-		if err != nil {
-			newError(c, http.StatusUnauthorized, err.Error())
-		}
-		c.Set(shopCtx, shopId)
-	}
-*/
 func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		tokenString := r.Header.Get("Authorization")
+		tokenString := r.Header.Get(authorizationHeader)
 		if tokenString == "" {
 			http.Error(w, "Authorization token is required", http.StatusUnauthorized)
 			return

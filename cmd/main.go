@@ -2,10 +2,10 @@ package main
 
 import (
 	"log"
-	movieapi "movieAPI"
-	handler "movieAPI/pkg/handlers"
-	"movieAPI/pkg/repository"
-	"movieAPI/pkg/service"
+	movieapi "movieapi"
+	handler "movieapi/pkg/handlers"
+	"movieapi/pkg/repository"
+	"movieapi/pkg/service"
 
 	_ "github.com/lib/pq"
 )

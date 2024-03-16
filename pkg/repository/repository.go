@@ -2,7 +2,7 @@ package repository
 
 import (
 	"database/sql"
-	movieapi "movieAPI"
+	movieapi "movieapi"
 )
 
 type Authorization interface {

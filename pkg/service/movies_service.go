@@ -1,8 +1,8 @@
 package service
 
 import (
-	movieapi "movieAPI"
-	"movieAPI/pkg/repository"
+	movieapi "movieapi"
+	"movieapi/pkg/repository"
 )
 
 type MovieService struct {

@@ -3,7 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	movieapi "movieAPI"
+	movieapi "movieapi"
 	"net/http"
 	"strconv"
 )
