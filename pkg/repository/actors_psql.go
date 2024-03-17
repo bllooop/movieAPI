@@ -38,7 +38,6 @@ func (r *ActorPostgres) ListActors() ([]movieapi.ActorList, error) {
 	if err != nil {
 		return nil, err
 	}
-	//SELECT at.id,at.name,at.gender,at.date,array_agg(mt.title) FROM actorlist at LEFT JOIN movielist mt on at.name = ANY(mt.actorname) GROUP BY (at.id, at.name, at.gender,at.date);
 	defer res.Close()
 	for res.Next() {
 		k := movieapi.ActorList{}
