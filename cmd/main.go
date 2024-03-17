@@ -1,29 +1,50 @@
 package main
 
 import (
+	"context"
+	"flag"
 	"log"
 	movieapi "movieapi"
 	handler "movieapi/pkg/handlers"
 	"movieapi/pkg/repository"
 	"movieapi/pkg/service"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	_ "github.com/lib/pq"
 )
 
 func main() {
-	//password := "54321"
-	//database := flag.String("databas", "postgres://postgres:54321@localhost:5433/postgres?sslmode=disable", "Подключение к PSQL")
+	port := "8000"
+	addr := flag.String("addr", port, "web-server address")
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 	dbpool, err := repository.NewPostgresDB()
 	if err != nil {
-		log.Fatal(err)
+		errorLog.Fatal(err)
 	}
 	repos := repository.NewRepository(dbpool)
 	services := service.NewService(repos)
 	handlers := handler.NewHandler(services)
-	port := "8000"
+	infoLog.Printf("app is starting on %s port", *addr)
 	srv := new(movieapi.Server)
-	if err := srv.RunServer(port, handlers.InitRoutes()); err != nil {
-		log.Fatalf("error occured during running server: %s", err.Error())
+	go func() {
+		if err := srv.RunServer(port, handlers.InitRoutes()); err != nil {
+			errorLog.Fatal(err)
+		}
+	}()
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+	<-quit
+	infoLog.Printf("app is shutting down")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatalf("error occured during server shutdown: %s", err.Error())
 	}
-	log.Printf("Запуск веб-сервиса на %s", port)
+	if err := dbpool.Close(); err != nil {
+		log.Fatalf("error occured during closing db conn: %s", err.Error())
+	}
 }

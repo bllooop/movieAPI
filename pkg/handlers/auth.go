@@ -24,19 +24,19 @@ func (h *Handler) signUp(w http.ResponseWriter, r *http.Request) {
 	var input movieapi.User
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
-		servErr(w, err)
+		clientErr(w, http.StatusBadRequest, err.Error())
 		return
 	}
 	id, err := h.services.Authorization.CreateUser(input)
 	if err != nil {
-		servErr(w, err)
+		clientErr(w, http.StatusBadRequest, err.Error())
 		return
 	}
 	res, err := JSONStruct(map[string]interface{}{
 		"id": id,
 	})
 	if err != nil {
-		servErr(w, err)
+		servErr(w, err, err.Error())
 	}
 	fmt.Fprintf(w, "%v", res)
 }
@@ -45,13 +45,13 @@ func (h *Handler) signIn(w http.ResponseWriter, r *http.Request) {
 	var input signInInput
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
-		servErr(w, err)
+		clientErr(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	token, err := h.services.Authorization.CreateToken(input.Username, input.Password)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		servErr(w, err, err.Error())
 		return
 	}
 	http.SetCookie(w, &http.Cookie{
