@@ -21,6 +21,9 @@ func (h *Handler) createMovielist(w http.ResponseWriter, r *http.Request) {
 		clientErr(w, http.StatusBadRequest, err.Error())
 		return
 	}
+	if input.Rating > 10 || input.Rating < 0 {
+		clientErr(w, http.StatusBadRequest, "rating allowed between 0 and 10")
+	}
 	id, err := h.services.MovieList.Create(retrievedValue, input)
 	if err != nil {
 		servErr(w, err, err.Error())
@@ -33,7 +36,6 @@ func (h *Handler) createMovielist(w http.ResponseWriter, r *http.Request) {
 		servErr(w, err, err.Error())
 	}
 	fmt.Fprintf(w, "%v", res)
-
 }
 
 func (h *Handler) getAllMoviesList(w http.ResponseWriter, r *http.Request) {
@@ -60,7 +62,6 @@ func (h *Handler) findMovieByName(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		clientErr(w, http.StatusBadRequest, err.Error())
 	}
-
 	res, err := JSONStruct(list)
 	if err != nil {
 		servErr(w, err, err.Error())

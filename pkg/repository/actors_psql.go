@@ -5,6 +5,8 @@ import (
 	"fmt"
 	movieapi "movieapi"
 	"strings"
+
+	"github.com/lib/pq"
 )
 
 type ActorPostgres struct {
@@ -31,15 +33,16 @@ func (r *ActorPostgres) CreateActor(userRole string, list movieapi.ActorList) (i
 }
 func (r *ActorPostgres) ListActors() ([]movieapi.ActorList, error) {
 	var lists []movieapi.ActorList
-	query := fmt.Sprintf(`SELECT id,name,gender,date FROM %s`, actorListTable)
+	query := fmt.Sprintf(`SELECT at.id,at.name,at.gender,at.date,array_agg(mt.title) FROM %s at LEFT JOIN %s mt ON at.name = ANY(mt.actorname) GROUP BY (at.id, at.name, at.gender,at.date)`, actorListTable, movieListTable)
 	res, err := r.db.Query(query)
 	if err != nil {
 		return nil, err
 	}
+	//SELECT at.id,at.name,at.gender,at.date,array_agg(mt.title) FROM actorlist at LEFT JOIN movielist mt on at.name = ANY(mt.actorname) GROUP BY (at.id, at.name, at.gender,at.date);
 	defer res.Close()
 	for res.Next() {
 		k := movieapi.ActorList{}
-		err := res.Scan(&k.Id, &k.Name, &k.Gender, &k.Birthdate)
+		err := res.Scan(&k.Id, &k.Name, &k.Gender, &k.Birthdate, pq.Array(&k.Movielist))
 		if err != nil {
 			return nil, err
 		}

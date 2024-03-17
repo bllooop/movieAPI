@@ -6,6 +6,8 @@ import (
 	"fmt"
 	movieapi "movieapi"
 	"strings"
+
+	"github.com/lib/pq"
 )
 
 type MoviePostgres struct {
@@ -20,14 +22,13 @@ func (r *MoviePostgres) Create(userRole string, list movieapi.MovieList) (int, e
 	if userRole == "0" {
 		return 0, errors.New("access restricted")
 	}
-	fmt.Println(userRole)
 	tr, err := r.db.Begin()
 	if err != nil {
 		return 0, err
 	}
 	var id int
-	createQuery := fmt.Sprintf(`INSERT INTO %s (title,rating,date) VALUES ($1,$2,$3) RETURNING id`, movieListTable)
-	row := tr.QueryRow(createQuery, list.Title, list.Rating, list.Date)
+	createQuery := fmt.Sprintf(`INSERT INTO %s (title,rating,date,description,actorname) VALUES ($1,$2,$3,$4,$5) RETURNING id`, movieListTable)
+	row := tr.QueryRow(createQuery, list.Title, list.Rating, list.Date, list.Description, pq.Array(list.ActorName))
 	if err := row.Scan(&id); err != nil {
 		tr.Rollback()
 		return 0, err
@@ -39,7 +40,7 @@ func (r *MoviePostgres) ListMovies(order string) ([]movieapi.MovieList, error) {
 	if order == "" {
 		order = "rating"
 	}
-	query := fmt.Sprintf(`SELECT id,title,rating,date FROM %s ORDER BY %s DESC`, movieListTable, order)
+	query := fmt.Sprintf(`SELECT id,title,rating,date,description,actorname FROM %s ORDER BY %s DESC`, movieListTable, order)
 	res, err := r.db.Query(query)
 	if err != nil {
 		return nil, err
@@ -47,7 +48,7 @@ func (r *MoviePostgres) ListMovies(order string) ([]movieapi.MovieList, error) {
 	defer res.Close()
 	for res.Next() {
 		k := movieapi.MovieList{}
-		err := res.Scan(&k.Id, &k.Title, &k.Rating, &k.Date)
+		err := res.Scan(&k.Id, &k.Title, &k.Rating, &k.Date, &k.Description, pq.Array(&k.ActorName))
 		if err != nil {
 			return nil, err
 		}
@@ -61,14 +62,14 @@ func (r *MoviePostgres) ListMovies(order string) ([]movieapi.MovieList, error) {
 
 func (r *MoviePostgres) GetByName(movieName string) ([]movieapi.MovieList, error) {
 	var list []movieapi.MovieList
-	res, err := r.db.Query("SELECT id,title,rating,date FROM movielist WHERE title LIKE '%' || $1 || '%'", movieName)
+	res, err := r.db.Query("SELECT id,title,rating,date,description,actorname FROM movielist WHERE title LIKE '%' || $1 || '%' OR ARRAY_TO_STRING(actorname, ',') LIKE '%' || $1 || '%'", movieName)
 	if err != nil {
 		return nil, err
 	}
 	defer res.Close()
 	for res.Next() {
 		k := movieapi.MovieList{}
-		err := res.Scan(&k.Id, &k.Title, &k.Rating, &k.Date)
+		err := res.Scan(&k.Id, &k.Title, &k.Rating, &k.Date, &k.Description, pq.Array(&k.ActorName))
 		if err != nil {
 			return nil, err
 		}
