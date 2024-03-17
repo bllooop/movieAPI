@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	movieapi "movieapi"
 	"strings"
@@ -16,6 +17,10 @@ func NewMoviePostgres(db *sql.DB) *MoviePostgres {
 }
 
 func (r *MoviePostgres) Create(userRole string, list movieapi.MovieList) (int, error) {
+	if userRole == "0" {
+		return 0, errors.New("access restricted")
+	}
+	fmt.Println(userRole)
 	tr, err := r.db.Begin()
 	if err != nil {
 		return 0, err

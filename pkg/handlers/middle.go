@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"fmt"
+	"context"
 	"net/http"
 	"strings"
 )
@@ -10,8 +10,6 @@ const (
 	authorizationHeader = "Authorization"
 	roleCtx             = "userRole"
 )
-
-var jwtKey = []byte("secret_key")
 
 func (h *Handler) AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -30,9 +28,12 @@ func (h *Handler) AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			http.Error(w, "invalid auth header", http.StatusUnauthorized)
 			return
 		}
-		fmt.Println(userRole)
+		r = setValue(r, userRole)
 		next.ServeHTTP(w, r)
 	})
+}
+func setValue(r *http.Request, userRole string) *http.Request {
+	return r.WithContext(context.WithValue(r.Context(), roleCtx, userRole))
 }
 
 /*func (h *Handler) getRole(userId int) (int, error) {
