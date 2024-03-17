@@ -15,7 +15,7 @@ func NewActorPostgres(db *sql.DB) *ActorPostgres {
 	return &ActorPostgres{db: db}
 }
 
-func (r *ActorPostgres) CreateActor(role int, list movieapi.ActorList) (int, error) {
+func (r *ActorPostgres) CreateActor(userRole string, list movieapi.ActorList) (int, error) {
 	tr, err := r.db.Begin()
 	if err != nil {
 		return 0, err
@@ -51,7 +51,7 @@ func (r *ActorPostgres) ListActors() ([]movieapi.ActorList, error) {
 	return lists, nil
 }
 
-func (r *ActorPostgres) Update(role, actorId int, input movieapi.UpdateActorListInput) error {
+func (r *ActorPostgres) Update(userRole string, actorId int, input movieapi.UpdateActorListInput) error {
 	setValues := make([]string, 0)
 	args := make([]interface{}, 0)
 	argId := 1
@@ -76,7 +76,7 @@ func (r *ActorPostgres) Update(role, actorId int, input movieapi.UpdateActorList
 	_, err := r.db.Exec(query, args...)
 	return err
 }
-func (r *ActorPostgres) Delete(role, actorId int) error {
+func (r *ActorPostgres) Delete(userRole string, actorId int) error {
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", actorListTable)
 	_, err := r.db.Exec(query, actorId)
 	return err

@@ -15,7 +15,7 @@ func NewMoviePostgres(db *sql.DB) *MoviePostgres {
 	return &MoviePostgres{db: db}
 }
 
-func (r *MoviePostgres) Create(role int, list movieapi.MovieList) (int, error) {
+func (r *MoviePostgres) Create(userRole string, list movieapi.MovieList) (int, error) {
 	tr, err := r.db.Begin()
 	if err != nil {
 		return 0, err
@@ -74,7 +74,7 @@ func (r *MoviePostgres) GetByName(movieName string) ([]movieapi.MovieList, error
 	}
 	return list, nil
 }
-func (r *MoviePostgres) Update(role, movId int, input movieapi.UpdateMovieListInput) error {
+func (r *MoviePostgres) Update(userRole string, movId int, input movieapi.UpdateMovieListInput) error {
 	setValues := make([]string, 0)
 	args := make([]interface{}, 0)
 	argId := 1
@@ -100,7 +100,7 @@ func (r *MoviePostgres) Update(role, movId int, input movieapi.UpdateMovieListIn
 	return err
 }
 
-func (r *MoviePostgres) Delete(role, movId int) error {
+func (r *MoviePostgres) Delete(userRole string, movId int) error {
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", movieListTable)
 	_, err := r.db.Exec(query, movId)
 	return err

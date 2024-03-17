@@ -15,7 +15,7 @@ func (h *Handler) createActorlist(w http.ResponseWriter, r *http.Request) {
 		servErr(w, err)
 		return
 	}
-	id, err := h.services.ActorList.CreateActor(1, input)
+	id, err := h.services.ActorList.CreateActor("1", input)
 	if err != nil {
 		servErr(w, err)
 		return
@@ -53,7 +53,7 @@ func (h *Handler) updateActorList(w http.ResponseWriter, r *http.Request) {
 		servErr(w, err)
 		return
 	}
-	if err := h.services.ActorList.Update(1, id, input); err != nil {
+	if err := h.services.ActorList.Update("1", id, input); err != nil {
 		servErr(w, err)
 	}
 	res, err := JSONStruct(statusResponse{
@@ -70,7 +70,7 @@ func (h *Handler) deleteActorList(w http.ResponseWriter, r *http.Request) {
 		clientErr(w, http.StatusBadRequest)
 		return
 	}
-	err = h.services.ActorList.Delete(1, id)
+	err = h.services.ActorList.Delete("1", id)
 	if err != nil {
 		servErr(w, err)
 		return

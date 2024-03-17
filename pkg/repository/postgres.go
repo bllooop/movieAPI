@@ -15,8 +15,10 @@ const (
 )
 
 const (
-	host     = "db"
-	port     = "5432"
+	//host     = "db"
+	//port     = "5432"
+	host     = "localhost"
+	port     = "5433"
 	user     = "postgres"
 	dbname   = "postgres"
 	sslmode  = "disable"

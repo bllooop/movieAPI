@@ -17,9 +17,11 @@ const (
 	tokenTTL   = 12 * time.Hour
 )
 
+var jwtKey = []byte("secret_key")
+
 type tokenClaims struct {
 	jwt.StandardClaims
-	UserId int `json:"user_id"`
+	UserRole string `json:"user_role"`
 }
 
 type AuthService struct {
@@ -34,17 +36,21 @@ func (s *AuthService) CreateUser(user movieapi.User) (int, error) {
 	return s.repo.CreateUser(user)
 }
 
-func (s *AuthService) SignUser(username, password string) (movieapi.User, error) {
-	return s.repo.SignUser(username, password)
-}
-
-func (s *AuthService) ParseToken(accesstok string) (*jwt.Token, error) {
-	return jwt.ParseWithClaims(accesstok, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+func (s *AuthService) ParseToken(accesstok string) (string, error) {
+	token, err := jwt.ParseWithClaims(accesstok, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid signing method")
 		}
 		return []byte(signingKey), nil
 	})
+	if err != nil {
+		return "", nil
+	}
+	claims, ok := token.Claims.(*tokenClaims)
+	if !ok {
+		return "", errors.New("token claims are not of type *tokenClaims")
+	}
+	return claims.UserRole, nil
 }
 
 func passHash(password string) string {
@@ -53,9 +59,27 @@ func passHash(password string) string {
 	return fmt.Sprintf("%x", hash.Sum([]byte(salt)))
 }
 
+func (s *AuthService) CreateToken(shopname, password string) (string, error) {
+	user, err := s.repo.SignUser(shopname, password)
+	if err != nil {
+		return "", err
+	}
+	token := jwt.New(jwt.SigningMethodHS256)
+	claims := token.Claims.(jwt.MapClaims)
+	claims["user_id"] = user.Id
+	claims["user_role"] = user.Role
+	claims["exp"] = time.Now().Add(time.Hour * 24).Unix() // Token expiration time
+	tokenString, err := token.SignedString(jwtKey)
+	if err != nil {
+		return "", err
+	}
+	return tokenString, nil
+}
+
 /*
-func (s *AuthService) GenerateToken(shopname, password string) (string, error) {
-	shop, err := s.repo.GetShop(shopname, passHash(password))
+
+func (s *AuthService) CreateToken(shopname, password string) (string, error) {
+	user, err := s.repo.SignUser(shopname, password)
 	if err != nil {
 		return "", err
 	}
@@ -67,22 +91,4 @@ func (s *AuthService) GenerateToken(shopname, password string) (string, error) {
 		shop.Id,
 	})
 	return token.SignedString([]byte(signingKey))
-}
-
-func (s *AuthService) ParseToken(accesstok string) (int, error) {
-	token, err := jwt.ParseWithClaims(accesstok, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, errors.New("invalid signing method")
-		}
-		return []byte(signingKey), nil
-	})
-	if err != nil {
-		return 0, nil
-	}
-	claims, ok := token.Claims.(*tokenClaims)
-	if !ok {
-		return 0, errors.New("token claims are not of type *tokenClaims")
-	}
-	return claims.ShopId, nil
-}
-*/
+} */

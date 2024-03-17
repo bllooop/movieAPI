@@ -11,18 +11,18 @@ type Authorization interface {
 	// GetUserRole()
 }
 type MovieList interface {
-	Create(role int, list movieapi.MovieList) (int, error)
+	Create(userRole string, list movieapi.MovieList) (int, error)
 	ListMovies(order string) ([]movieapi.MovieList, error)
 	GetByName(movieName string) ([]movieapi.MovieList, error)
-	Update(role, movId int, input movieapi.UpdateMovieListInput) error
-	Delete(role, movId int) error
+	Update(userRole string, movId int, input movieapi.UpdateMovieListInput) error
+	Delete(userRole string, movId int) error
 }
 
 type ActorList interface {
-	CreateActor(role int, list movieapi.ActorList) (int, error)
+	CreateActor(userRole string, list movieapi.ActorList) (int, error)
 	ListActors() ([]movieapi.ActorList, error)
-	Update(role, actorId int, input movieapi.UpdateActorListInput) error
-	Delete(role, actorId int) error
+	Update(userRole string, actorId int, input movieapi.UpdateActorListInput) error
+	Delete(userRole string, actorId int) error
 }
 type Repository struct {
 	Authorization

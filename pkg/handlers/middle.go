@@ -2,12 +2,8 @@ package handlers
 
 import (
 	"fmt"
-	movieapi "movieapi"
 	"net/http"
 	"strings"
-	"time"
-
-	"github.com/golang-jwt/jwt"
 )
 
 const (
@@ -17,7 +13,7 @@ const (
 
 var jwtKey = []byte("secret_key")
 
-func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
+func (h *Handler) AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		tokenString := r.Header.Get(authorizationHeader)
 		if tokenString == "" {
@@ -29,36 +25,14 @@ func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			http.Error(w, "invalid auth header", http.StatusUnauthorized)
 			return
 		}
-		token, err := jwt.Parse(headerSplit[1], func(token *jwt.Token) (interface{}, error) {
-			// Check signing method
-			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-			}
-			return jwtKey, nil
-		})
+		userRole, err := h.services.Authorization.ParseToken(headerSplit[1])
 		if err != nil {
-			http.Error(w, "Invalid token: "+err.Error(), http.StatusUnauthorized)
+			http.Error(w, "invalid auth header", http.StatusUnauthorized)
 			return
 		}
-
-		if !token.Valid {
-			http.Error(w, "Invalid token", http.StatusUnauthorized)
-			return
-		}
-
+		fmt.Println(userRole)
 		next.ServeHTTP(w, r)
 	})
-}
-func CreateToken(user movieapi.User) (string, error) {
-	token := jwt.New(jwt.SigningMethodHS256)
-	claims := token.Claims.(jwt.MapClaims)
-	claims["user_id"] = user.Id
-	claims["exp"] = time.Now().Add(time.Hour * 24).Unix() // Token expiration time
-	tokenString, err := token.SignedString(jwtKey)
-	if err != nil {
-		return "", err
-	}
-	return tokenString, nil
 }
 
 /*func (h *Handler) getRole(userId int) (int, error) {
