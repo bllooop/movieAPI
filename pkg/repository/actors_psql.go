@@ -35,7 +35,7 @@ func (r *ActorPostgres) CreateActor(userRole string, list movieapi.ActorList) (i
 // SELECT at.id,at.name,at.gender,at.date,array_agg(mt.title) FROM actorlist at LEFT JOIN movielist mt ON at.name = ANY(mt.actorname) GROUP BY (at.id, at.name, at.gender,at.date);
 func (r *ActorPostgres) ListActors() ([]movieapi.ActorList, error) {
 	var lists []movieapi.ActorList
-	query := fmt.Sprintf(`SELECT at.id,at.name,at.gender,at.date,array_agg(mt.title) FROM %s at LEFT JOIN %s mt ON at.name = ANY(mt.actorname) GROUP BY (at.id, at.name, at.gender,at.date)`, actorListTable, movieListTable)
+	query := fmt.Sprintf(`SELECT at.id,at.name,at.gender,at.date,array_agg(mt.title)filter (where mt.title is not null) FROM %s at LEFT JOIN %s mt ON at.name = ANY(mt.actorname) GROUP BY (at.id, at.name, at.gender,at.date)`, actorListTable, movieListTable)
 	res, err := r.db.Query(query)
 	if err != nil {
 		return nil, err
