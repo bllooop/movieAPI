@@ -13,3 +13,5 @@ make build && make run
 ```
 make migrate
 ```
+
+Документвция Swagger после запуска будет доступна по ссылке: http://localhost:8000/swagger/index.html#/
