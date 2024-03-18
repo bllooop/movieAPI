@@ -134,7 +134,7 @@ paths:
       tags:
       - actorLists
   /api/actors/delete:
-    post:
+    delete:
       description: delete actor from list by id
       operationId: delete-actor-list
       parameters:
@@ -405,7 +405,7 @@ paths:
       tags:
       - movieLists
   /api/movies/delete:
-    post:
+    delete:
       description: delete movie from list by id
       operationId: delete-list
       parameters:

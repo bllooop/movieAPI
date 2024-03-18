@@ -26,7 +26,7 @@ type ActorList struct {
 }
 type UpdateMovieListInput struct {
 	Title       *string   `json:"title"`
-	Rating      *string   `json:"rating"`
+	Rating      *int      `json:"rating"`
 	Description *string   `json:"description"`
 	Date        *string   `json:"date"`
 	ActorName   *[]string `json:"actorname"`

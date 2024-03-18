@@ -36,7 +36,7 @@ func TestActorListPostgres_Create(t *testing.T) {
 
 				rows := sqlmock.NewRows([]string{"id"}).AddRow(1)
 				mock.ExpectQuery("INSERT INTO actorlist").
-					WithArgs("title", 10, "1999-9-9", "description", `{"a", "b"}`).WillReturnRows(rows)
+					WithArgs("name", "gender", "1999").WillReturnRows(rows)
 
 				mock.ExpectCommit()
 			},
@@ -56,7 +56,7 @@ func TestActorListPostgres_Create(t *testing.T) {
 
 				rows := sqlmock.NewRows([]string{"id"})
 				mock.ExpectQuery("INSERT INTO actorlist").
-					WithArgs("", 10, "1999-9-9", "description", `{"a", "b"}`).WillReturnRows(rows)
+					WithArgs("", "gender", "1999").WillReturnRows(rows)
 
 				mock.ExpectRollback()
 			},
@@ -106,17 +106,17 @@ func TestActorListPostgres_GetAll(t *testing.T) {
 		{
 			name: "Ok",
 			mock: func() {
-				rows := sqlmock.NewRows([]string{"id", "rating", "date", "title", "description", "actorname"}).
-					AddRow(1, "name1", 1, "1999-9-1", "description1", `{"a", "b"}`).
-					AddRow(2, "name2", 2, "1999-9-2", "description2", `{"a", "b"}`).
-					AddRow(3, "name3", 3, "1999-9-3", "description3", `{"a", "b"}`)
+				rows := sqlmock.NewRows([]string{"id", "rating", "date", "description", "title"}).
+					AddRow(1, "name1", "male1", "1999-9-1", `{"film1"}`).
+					AddRow(2, "name2", "male2", "1999-9-2", `{"film2"}`).
+					AddRow(3, "name3", "male3", "1999-9-3", `{"film3"}`)
 
-				mock.ExpectQuery("SELECT at.id,at.name,at.gender,at.date,array_agg(mt.title) FROM actorlist at LEFT JOIN movielist mt ON at.name = ANY(mt.actorname) GROUP BY (at.id, at.name, at.gender,at.date)").WillReturnRows(rows)
+				mock.ExpectQuery("SELECT (.+) FROM actorlist at LEFT JOIN movielist mt ON (.+) GROUP BY  (.+) ").WillReturnRows(rows)
 			},
 			want: []movieapi.ActorList{
-				{Id: 1, Name: "name1", Gender: "male1", Birthdate: "1999-9-1"},
-				{Id: 2, Name: "name2", Gender: "male2", Birthdate: "1999-9-2"},
-				{Id: 3, Name: "name3", Gender: "male3", Birthdate: "1999-9-3"},
+				{Id: 1, Name: "name1", Gender: "male1", Birthdate: "1999-9-1", Movielist: []string{"film1"}},
+				{Id: 2, Name: "name2", Gender: "male2", Birthdate: "1999-9-2", Movielist: []string{"film2"}},
+				{Id: 3, Name: "name3", Gender: "male3", Birthdate: "1999-9-3", Movielist: []string{"film3"}},
 			},
 		},
 	}
@@ -217,8 +217,8 @@ func TestActorListPostgres_Update(t *testing.T) {
 		{
 			name: "OK_AllFields",
 			mock: func() {
-				mock.ExpectExec("UPDATE actorlist SET (.+) FROM actorlist WHERE (.+)").
-					WithArgs("new title", "new description", 1).WillReturnResult(sqlmock.NewResult(0, 1))
+				mock.ExpectExec("UPDATE actorlist SET (.+) WHERE (.+)").
+					WithArgs("new name", "new gender", "1900", 1).WillReturnResult(sqlmock.NewResult(0, 1))
 			},
 			input: args{
 				actorId: 1,
@@ -226,15 +226,14 @@ func TestActorListPostgres_Update(t *testing.T) {
 					Name:      stringPointer("new name"),
 					Gender:    stringPointer("new gender"),
 					Birthdate: stringPointer("1900"),
-					//ActorName:   slicePointer([]string{"a,b"}),
 				},
 			},
 		},
 		{
-			name: "OK_WithoutDescription",
+			name: "OK_OnlyName",
 			mock: func() {
-				mock.ExpectExec("UPDATE actorlist SET (.+) FROM actorlist WHERE (.+)").
-					WithArgs("new title", 1).WillReturnResult(sqlmock.NewResult(0, 1))
+				mock.ExpectExec("UPDATE actorlist SET (.+) WHERE (.+)").
+					WithArgs("new name", 1).WillReturnResult(sqlmock.NewResult(0, 1))
 			},
 			input: args{
 				actorId: 1,
@@ -244,10 +243,10 @@ func TestActorListPostgres_Update(t *testing.T) {
 			},
 		},
 		{
-			name: "OK_WithoutTitle",
+			name: "OK_OnlyGender",
 			mock: func() {
-				mock.ExpectExec("UPDATE actorlist SET (.+) FROM actorlist WHERE (.+)").
-					WithArgs("new description", 1, 1).WillReturnResult(sqlmock.NewResult(0, 1))
+				mock.ExpectExec("UPDATE actorlist SET (.+) WHERE (.+)").
+					WithArgs("new gender", 1).WillReturnResult(sqlmock.NewResult(0, 1))
 			},
 			input: args{
 				actorId: 1,
@@ -259,7 +258,7 @@ func TestActorListPostgres_Update(t *testing.T) {
 		{
 			name: "OK_NoInputFields",
 			mock: func() {
-				mock.ExpectExec("UPDATE actorlist SET (.+) FROM actorlist WHERE (.+)").
+				mock.ExpectExec("UPDATE actorlist SET  WHERE (.+)").
 					WithArgs(1).WillReturnResult(sqlmock.NewResult(0, 1))
 			},
 			input: args{

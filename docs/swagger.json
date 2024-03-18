@@ -124,7 +124,7 @@
             }
         },
         "/api/actors/delete": {
-            "post": {
+            "delete": {
                 "security": [
                     {
                         "ApiKeyAuth": []
@@ -542,7 +542,7 @@
             }
         },
         "/api/movies/delete": {
-            "post": {
+            "delete": {
                 "security": [
                     {
                         "ApiKeyAuth": []

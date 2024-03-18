@@ -130,7 +130,7 @@ const docTemplate = `{
             }
         },
         "/api/actors/delete": {
-            "post": {
+            "delete": {
                 "security": [
                     {
                         "ApiKeyAuth": []
@@ -548,7 +548,7 @@ const docTemplate = `{
             }
         },
         "/api/movies/delete": {
-            "post": {
+            "delete": {
                 "security": [
                     {
                         "ApiKeyAuth": []

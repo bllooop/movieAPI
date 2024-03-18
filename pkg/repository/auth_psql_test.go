@@ -17,53 +17,39 @@ func TestAuthPostgres_Create(t *testing.T) {
 
 	r := NewAuthPostgres(db)
 
-	type args struct {
-		user movieapi.User
-	}
 	tests := []struct {
 		name    string
 		mock    func()
-		input   args
+		input   movieapi.User
 		want    int
 		wantErr bool
 	}{
 		{
 			name: "Ok",
 			mock: func() {
-				mock.ExpectBegin()
-
 				rows := sqlmock.NewRows([]string{"id"}).AddRow(1)
 				mock.ExpectQuery("INSERT INTO userlist").
 					WithArgs("username", "123", "0").WillReturnRows(rows)
-
-				mock.ExpectCommit()
 			},
-			input: args{
-				user: movieapi.User{
-					UserName: "username",
-					Password: "123",
-					Role:     "0",
-				},
+			input: movieapi.User{
+				UserName: "username",
+				Password: "123",
+				Role:     "0",
 			},
 			want: 1,
 		},
 		{
 			name: "Empty input fields",
 			mock: func() {
-				mock.ExpectBegin()
 
 				rows := sqlmock.NewRows([]string{"id"})
 				mock.ExpectQuery("INSERT INTO userlist").
 					WithArgs("", "123", "0").WillReturnRows(rows)
-
-				mock.ExpectRollback()
 			},
-			input: args{
-				user: movieapi.User{
-					UserName: "",
-					Password: "123",
-					Role:     "0",
-				},
+			input: movieapi.User{
+				UserName: "",
+				Password: "123",
+				Role:     "0",
 			},
 			wantErr: true,
 		},
@@ -73,7 +59,7 @@ func TestAuthPostgres_Create(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 
-			got, err := r.CreateUser(tt.input.user)
+			got, err := r.CreateUser(tt.input)
 			if tt.wantErr {
 				assert.Error(t, err)
 			} else {
@@ -109,8 +95,8 @@ func TestAuthPostgres_GetUser(t *testing.T) {
 		{
 			name: "Ok",
 			mock: func() {
-				rows := sqlmock.NewRows([]string{"id", "username", "password"}).
-					AddRow(1, "test", "password")
+				rows := sqlmock.NewRows([]string{"id", "username", "password", "role"}).
+					AddRow(1, "test", "password", "0")
 				mock.ExpectQuery("SELECT (.+) FROM userlist").
 					WithArgs("test", "password").WillReturnRows(rows)
 			},
@@ -119,6 +105,7 @@ func TestAuthPostgres_GetUser(t *testing.T) {
 				Id:       1,
 				UserName: "test",
 				Password: "password",
+				Role:     "0",
 			},
 		},
 		{

@@ -133,7 +133,7 @@ func (h *Handler) updateActorList(w http.ResponseWriter, r *http.Request) {
 // @Failure 400,404 {string} message
 // @Failure 500 {string} message
 // @Failure default {string} message
-// @Router /api/actors/delete [post]
+// @Router /api/actors/delete [delete]
 func (h *Handler) deleteActorList(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
 		w.Header().Set("Allow", http.MethodDelete)

@@ -161,7 +161,7 @@ func (h *Handler) updateMovieList(w http.ResponseWriter, r *http.Request) {
 // @Failure 400,404 {string} message
 // @Failure 500 {string} message
 // @Failure default {string} message
-// @Router /api/movies/delete [post]
+// @Router /api/movies/delete [delete]
 func (h *Handler) deleteMovieList(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
 		w.Header().Set("Allow", http.MethodDelete)
