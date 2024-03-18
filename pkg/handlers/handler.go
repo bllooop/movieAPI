@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	_ "docs"
+	_ "movieapi/docs"
 	"movieapi/pkg/service"
 	"net/http"
 
@@ -17,8 +17,9 @@ func NewHandler(services *service.Service) *Handler {
 }
 func (h *Handler) InitRoutes() *http.ServeMux {
 	mux := http.NewServeMux()
-
-	mux.Handle("/swagger/", httpSwagger.Handler(httpSwagger.URL("http://localhost:8000/swagger/doc.json")))
+	mux.Handle("/swagger/", httpSwagger.Handler(
+		httpSwagger.URL("/swagger/doc.json"),
+	))
 	mux.HandleFunc("/api/auth/sign-up", h.signUp)
 	mux.HandleFunc("/api/auth/sign-in", h.signIn)
 	mux.HandleFunc("/api/movies", h.AuthMiddleware(h.getAllMoviesList))

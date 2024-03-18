@@ -1,5 +1,29 @@
 basePath: /
 definitions:
+  handlers.signInInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  movieapi.ActorList:
+    properties:
+      date:
+        type: string
+      gender:
+        type: string
+      id:
+        type: integer
+      movies:
+        items:
+          type: string
+        type: array
+      name:
+        type: string
+    required:
+    - name
+    type: object
   movieapi.MovieList:
     properties:
       actorname:
@@ -31,11 +55,205 @@ definitions:
 host: localhost:8000
 info:
   contact: {}
-  description: API Server for application made for viewing and modifying actor and
-    movie data
+  description: 'API Server for application made for viewing and modifying actor and
+    movie data. Authorization: Bearer + token. Token is received after sign-in.'
   title: Movie API
   version: "1.0"
 paths:
+  /api/actors:
+    get:
+      description: get actor list
+      operationId: get-actor-list
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+        default:
+          description: ""
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get list of actors
+      tags:
+      - actorLists
+  /api/actors/add:
+    post:
+      consumes:
+      - application/json
+      description: create actor list
+      operationId: create-actor-list
+      parameters:
+      - description: list info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/movieapi.ActorList'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+        default:
+          description: ""
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Create actor list
+      tags:
+      - actorLists
+  /api/actors/delete:
+    post:
+      description: delete actor from list by id
+      operationId: delete-actor-list
+      parameters:
+      - description: actor delete by id
+        in: query
+        name: id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+        default:
+          description: ""
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Delete actor from list
+      tags:
+      - actorLists
+  /api/actors/update:
+    post:
+      consumes:
+      - application/json
+      description: update movie in list by id
+      operationId: update-actor-list
+      parameters:
+      - description: list info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/movieapi.ActorList'
+      - description: actor update by id
+        in: query
+        name: id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+        default:
+          description: ""
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Update actor in list
+      tags:
+      - actorLists
+  /api/auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: sign in your account
+      operationId: sign-account
+      parameters:
+      - description: account info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.signInInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+        default:
+          description: ""
+          schema:
+            type: string
+      summary: SignIn
+      tags:
+      - auth
   /api/auth/sign-up:
     post:
       consumes:
@@ -75,7 +293,77 @@ paths:
       summary: SignUp
       tags:
       - auth
+  /api/movie:
+    get:
+      description: find movie in list either by fragment of a movie or an actor's
+        name
+      operationId: find-list
+      parameters:
+      - description: name search by name
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+        default:
+          description: ""
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Find movie in list
+      tags:
+      - movieLists
   /api/movies:
+    get:
+      description: get all movies in list
+      operationId: get-list
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+        default:
+          description: ""
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get all movies list
+      tags:
+      - movieLists
+  /api/movies/add:
     post:
       consumes:
       - application/json
@@ -114,6 +402,88 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Create movie list
+      tags:
+      - movieLists
+  /api/movies/delete:
+    post:
+      description: delete movie from list by id
+      operationId: delete-list
+      parameters:
+      - description: movie delete by id
+        in: query
+        name: id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+        default:
+          description: ""
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Delete movie from list
+      tags:
+      - movieLists
+  /api/movies/update:
+    post:
+      consumes:
+      - application/json
+      description: update movie in list by id
+      operationId: update-list
+      parameters:
+      - description: list info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/movieapi.MovieList'
+      - description: movie update by id
+        in: query
+        name: id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+        default:
+          description: ""
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Update movie in list
       tags:
       - movieLists
 securityDefinitions:

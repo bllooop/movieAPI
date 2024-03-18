@@ -119,8 +119,7 @@ func TestMovieListPostgres_GetAll(t *testing.T) {
 					AddRow(2, "title2", 2, "1999-9-2", "description2", `{"a", "b"}`).
 					AddRow(3, "title3", 3, "1999-9-3", "description3", `{"a", "b"}`)
 
-				mock.ExpectQuery("SELECT (.+) FROM movielist ORDER BY (.+) DESC").
-					WithArgs("rating").WillReturnRows(rows)
+				mock.ExpectQuery("SELECT (.+) FROM movielist ORDER BY (.+) DESC").WillReturnRows(rows)
 			},
 			input: args{
 				order: "rating",

@@ -59,10 +59,27 @@ func (h *Handler) signUp(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%v", res)
 }
 
+// @Summary SignIn
+// @Tags auth
+// @Description sign in your account
+// @ID sign-account
+// @Accept  json
+// @Produce  json
+// @Param input body signInInput true "account info"
+// @Success 200 {integer} integer 1
+// @Failure 400,404 {string} message
+// @Failure 500 {string} message
+// @Failure default {string} message
+// @Router /api/auth/sign-in [post]
 func (h *Handler) signIn(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		w.Header().Set("Allow", http.MethodPost)
+		clientErr(w, http.StatusMethodNotAllowed, "only post method allowed")
+		return
+	}
 	var input signInInput
 	err := json.NewDecoder(r.Body).Decode(&input)
-	if err != nil {
+	if err != nil || input.Password == "" || input.Username == "" {
 		clientErr(w, http.StatusBadRequest, err.Error())
 		return
 	}

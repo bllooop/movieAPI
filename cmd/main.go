@@ -18,7 +18,7 @@ import (
 
 // @title Movie API
 // @version 1.0
-// @description API Server for application made for viewing and modifying actor and movie data
+// @description API Server for application made for viewing and modifying actor and movie data. Authorization: Bearer + token. Token is received after sign-in.
 
 // @host localhost:8000
 // @BasePath /
