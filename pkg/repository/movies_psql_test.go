@@ -270,7 +270,7 @@ func TestMovieListPostgres_Delete(t *testing.T) {
 	}
 }
 
-func TestTodoListPostgres_Update(t *testing.T) {
+func TestMovieListPostgres_Update(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
