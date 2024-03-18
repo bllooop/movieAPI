@@ -16,6 +16,16 @@ import (
 	_ "github.com/lib/pq"
 )
 
+// @title Movie API
+// @version 1.0
+// @description API Server for application made for viewing and modifying actor and movie data
+
+// @host localhost:8000
+// @BasePath /
+
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	port := "8000"
 	addr := flag.String("addr", port, "web-server address")

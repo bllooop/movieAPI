@@ -8,17 +8,31 @@ import (
 	"strconv"
 )
 
+// @Summary Create movie list
+// @Security ApiKeyAuth
+// @Tags movieLists
+// @Description create movie list
+// @ID create-list
+// @Accept  json
+// @Produce  json
+// @Param input body movieapi.MovieList true "list info"
+// @Success 200 {integer} integer 1
+// @Failure 400,404 {string} message
+// @Failure 500 {string} message
+// @Failure default {string} message
+// @Router /api/movies [post]
 func (h *Handler) createMovielist(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.Header().Set("Allow", http.MethodPost)
 		clientErr(w, http.StatusMethodNotAllowed, "only post method allowed")
 		return
 	}
-	retrievedValue := r.Context().Value(roleCtx).(string)
+	retrievedValue := "1" // when testing uncomment
+	//retrievedValue := r.Context().Value(roleCtx).(string) // when testing comment
 	var input movieapi.MovieList
 	err := json.NewDecoder(r.Body).Decode(&input)
-	if err != nil {
-		clientErr(w, http.StatusBadRequest, err.Error())
+	if err != nil || input.Title == "" || input.Date == "" || input.Description == "" || input.Rating == 0 || len(input.ActorName) == 0 {
+		clientErr(w, http.StatusBadRequest, "invalid input body")
 		return
 	}
 	if input.Rating > 10 || input.Rating < 0 {

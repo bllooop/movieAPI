@@ -99,6 +99,11 @@ func (r *MoviePostgres) Update(userRole string, movId int, input movieapi.Update
 		args = append(args, *input.Date)
 		argId++
 	}
+	if input.Description != nil {
+		setValues = append(setValues, fmt.Sprintf("description=$%d", argId))
+		args = append(args, *input.Date)
+		argId++
+	}
 	setQuery := strings.Join(setValues, ", ")
 	query := fmt.Sprintf("UPDATE %s SET %s WHERE id=$%d", movieListTable, setQuery, argId)
 	args = append(args, movId)

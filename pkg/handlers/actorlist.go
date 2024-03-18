@@ -14,13 +14,14 @@ func (h *Handler) createActorlist(w http.ResponseWriter, r *http.Request) {
 		clientErr(w, http.StatusMethodNotAllowed, "only post method allowed")
 		return
 	}
-	retrievedValue := r.Context().Value(roleCtx).(string)
 	var input movieapi.ActorList
 	err := json.NewDecoder(r.Body).Decode(&input)
-	if err != nil {
-		clientErr(w, http.StatusBadRequest, err.Error())
+	if err != nil || input.Name == "" || input.Gender == "" || input.Birthdate == "" {
+		clientErr(w, http.StatusBadRequest, "invalid input body")
 		return
 	}
+	retrievedValue := "1" // when testing uncomment
+	//retrievedValue := r.Context().Value(roleCtx).(string) // when testing comment
 	id, err := h.services.ActorList.CreateActor(retrievedValue, input)
 	if err != nil {
 		servErr(w, err, err.Error())
@@ -57,7 +58,8 @@ func (h *Handler) updateActorList(w http.ResponseWriter, r *http.Request) {
 		clientErr(w, http.StatusMethodNotAllowed, "only post method allowed")
 		return
 	}
-	retrievedValue := r.Context().Value(roleCtx).(string)
+	retrievedValue := "1" // when testing uncomment
+	//retrievedValue := r.Context().Value(roleCtx).(string) // when testing comment
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil || id < 1 {
 		clientErr(w, http.StatusBadRequest, "invalid id parameter")

@@ -1,10 +1,8 @@
 package handlers
 
 import (
-	"fmt"
 	"log"
 	"net/http"
-	"runtime/debug"
 )
 
 type statusResponse struct {
@@ -12,15 +10,15 @@ type statusResponse struct {
 }
 
 func servErr(w http.ResponseWriter, err error, message string) {
-	trace := fmt.Sprintf("%s\n%s", err.Error(), debug.Stack())
-	log.Println(trace)
+	//trace := fmt.Sprintf("%s\n%s", err.Error(), debug.Stack())
+	//log.Println(trace)
 	log.Println(message)
-	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+	http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 }
 
 func clientErr(w http.ResponseWriter, status int, message string) {
-	log.Fatal(message)
-	http.Error(w, http.StatusText(status), status)
+	log.Println(message)
+	http.Error(w, message, status)
 }
 
 func notFound(w http.ResponseWriter) {

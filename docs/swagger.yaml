@@ -1,0 +1,124 @@
+basePath: /
+definitions:
+  movieapi.MovieList:
+    properties:
+      actorname:
+        items:
+          type: string
+        type: array
+      date:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      rating:
+        type: integer
+      title:
+        type: string
+    required:
+    - title
+    type: object
+  movieapi.User:
+    properties:
+      password:
+        type: string
+      role:
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost:8000
+info:
+  contact: {}
+  description: API Server for application made for viewing and modifying actor and
+    movie data
+  title: Movie API
+  version: "1.0"
+paths:
+  /api/auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: create account
+      operationId: create-account
+      parameters:
+      - description: account info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/movieapi.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+        default:
+          description: ""
+          schema:
+            type: string
+      summary: SignUp
+      tags:
+      - auth
+  /api/movies:
+    post:
+      consumes:
+      - application/json
+      description: create movie list
+      operationId: create-list
+      parameters:
+      - description: list info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/movieapi.MovieList'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+        default:
+          description: ""
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Create movie list
+      tags:
+      - movieLists
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

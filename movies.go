@@ -24,29 +24,15 @@ type ActorList struct {
 	Birthdate string   `json:"date" db:"date"`
 	Movielist []string `json:"movies"`
 }
-
 type UpdateMovieListInput struct {
-	Title  *string `json:"title"`
-	Rating *string `json:"rating"`
-	Date   *string `json:"date"`
-}
-
-func (i UpdateMovieListInput) Validation() error {
-	if i.Title == nil && i.Rating == nil && i.Date == nil {
-		return errors.New("update params have no values")
-	}
-	return nil
-}
-
-type UpdateMovieItemInput struct {
 	Title       *string   `json:"title"`
+	Rating      *string   `json:"rating"`
 	Description *string   `json:"description"`
-	Rating      *int      `json:"rating"`
 	Date        *string   `json:"date"`
 	ActorName   *[]string `json:"actorname"`
 }
 
-func (i UpdateMovieItemInput) Validation() error {
+func (i UpdateMovieListInput) Validation() error {
 	if i.Title == nil && i.Description == nil && i.Rating == nil && i.Date == nil && i.ActorName == nil {
 		return errors.New("update params have no values")
 	}
