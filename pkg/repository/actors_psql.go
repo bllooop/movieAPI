@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	movieapi "movieapi"
 	"strings"
@@ -18,6 +19,9 @@ func NewActorPostgres(db *sql.DB) *ActorPostgres {
 }
 
 func (r *ActorPostgres) CreateActor(userRole string, list movieapi.ActorList) (int, error) {
+	if userRole == "0" {
+		return 0, errors.New("access restricted")
+	}
 	tr, err := r.db.Begin()
 	if err != nil {
 		return 0, err
@@ -56,6 +60,9 @@ func (r *ActorPostgres) ListActors() ([]movieapi.ActorList, error) {
 }
 
 func (r *ActorPostgres) Update(userRole string, actorId int, input movieapi.UpdateActorListInput) error {
+	if userRole == "0" {
+		return errors.New("access restricted")
+	}
 	setValues := make([]string, 0)
 	args := make([]interface{}, 0)
 	argId := 1
@@ -81,6 +88,9 @@ func (r *ActorPostgres) Update(userRole string, actorId int, input movieapi.Upda
 	return err
 }
 func (r *ActorPostgres) Delete(userRole string, actorId int) error {
+	if userRole == "0" {
+		return errors.New("access restricted")
+	}
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", actorListTable)
 	_, err := r.db.Exec(query, actorId)
 	return err

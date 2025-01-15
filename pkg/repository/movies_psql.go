@@ -81,6 +81,9 @@ func (r *MoviePostgres) GetByName(movieName string) ([]movieapi.MovieList, error
 	return list, nil
 }
 func (r *MoviePostgres) Update(userRole string, movId int, input movieapi.UpdateMovieListInput) error {
+	if userRole == "0" {
+		return errors.New("access restricted")
+	}
 	setValues := make([]string, 0)
 	args := make([]interface{}, 0)
 	argId := 1
@@ -112,6 +115,9 @@ func (r *MoviePostgres) Update(userRole string, movId int, input movieapi.Update
 }
 
 func (r *MoviePostgres) Delete(userRole string, movId int) error {
+	if userRole == "0" {
+		return errors.New("access restricted")
+	}
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", movieListTable)
 	_, err := r.db.Exec(query, movId)
 	return err

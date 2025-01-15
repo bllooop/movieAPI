@@ -1,19 +1,12 @@
 package service
 
 import (
-	"crypto/sha1"
 	"errors"
-	"fmt"
 	movieapi "movieapi"
 	"movieapi/pkg/repository"
 	"time"
 
 	"github.com/golang-jwt/jwt"
-)
-
-const (
-	salt     = "slfnoinrf90h390fnviofkl"
-	tokenTTL = 12 * time.Hour
 )
 
 var jwtKey = []byte("secret_key")
@@ -52,14 +45,14 @@ func (s *AuthService) ParseToken(accesstok string) (string, error) {
 	return claims.UserRole, nil
 }
 
-func passHash(password string) string {
+/*func passHash(password string) string {
 	hash := sha1.New()
 	hash.Write([]byte(password))
 	return fmt.Sprintf("%x", hash.Sum([]byte(salt)))
-}
+}*/
 
-func (s *AuthService) CreateToken(shopname, password string) (string, error) {
-	user, err := s.repo.SignUser(shopname, password)
+func (s *AuthService) CreateToken(username, password string) (string, error) {
+	user, err := s.repo.SignUser(username, password)
 	if err != nil {
 		return "", err
 	}

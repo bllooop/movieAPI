@@ -7,7 +7,7 @@ import (
 
 type Authorization interface {
 	CreateUser(user movieapi.User) (int, error)
-	CreateToken(shopname, password string) (string, error)
+	CreateToken(username, password string) (string, error)
 	ParseToken(accesstok string) (string, error)
 	//GetUserRole()
 }
