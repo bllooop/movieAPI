@@ -1,7 +1,5 @@
 package movieapi
 
-import "errors"
-
 type MovieList struct {
 	Id          int      `json:"id"`
 	Title       string   `json:"title" binding:"required"`
@@ -32,12 +30,12 @@ type UpdateMovieListInput struct {
 	ActorName   *[]string `json:"actorname"`
 }
 
-func (i UpdateMovieListInput) Validation() error {
+/*func (i UpdateMovieListInput) Validation() error {
 	if i.Title == nil && i.Description == nil && i.Rating == nil && i.Date == nil && i.ActorName == nil {
 		return errors.New("update params have no values")
 	}
 	return nil
-}
+}*/
 
 type UpdateActorListInput struct {
 	Name      *string `json:"name"`
@@ -45,9 +43,9 @@ type UpdateActorListInput struct {
 	Birthdate *string `json:"date"`
 }
 
-func (i UpdateActorListInput) ValidationAct() error {
+/*func (i UpdateActorListInput) ValidationAct() error {
 	if i.Name == nil && i.Gender == nil && i.Birthdate == nil {
 		return errors.New("update params have no values")
 	}
 	return nil
-}
+}*/

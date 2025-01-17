@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	movieapi "movieapi"
 	"movieapi/pkg/repository"
 )
@@ -25,8 +26,8 @@ func (s *ActorService) Delete(userRole string, actorId int) error {
 	return s.repo.Delete(userRole, actorId)
 }
 func (s *ActorService) Update(userRole string, actorId int, input movieapi.UpdateActorListInput) error {
-	if err := input.ValidationAct(); err != nil {
-		return err
+	if input.Name == nil && input.Gender == nil && input.Birthdate == nil {
+		return errors.New("update params have no values")
 	}
 	return s.repo.Update(userRole, actorId, input)
 }
