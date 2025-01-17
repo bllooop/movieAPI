@@ -102,3 +102,92 @@ func TestHandler_userIdentity(t *testing.T) {
 }
 func next(w http.ResponseWriter, r *http.Request) {
 } */
+
+/*
+package handler
+
+import (
+	"context"
+	"errors"
+	"net/http"
+	"net/http/httptest"
+	"strings"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+)
+
+type MockAuthorizationService struct {
+	mock.Mock
+}
+
+func (m *MockAuthorizationService) ParseToken(token string) (string, error) {
+	args := m.Called(token)
+	return args.String(0), args.Error(1)
+}
+
+func TestAuthMiddleware(t *testing.T) {
+	mockAuth := new(MockAuthorizationService)
+	handler := &Handler{services: &Services{Authorization: mockAuth}}
+
+	// Mock the "next" handler
+	nextHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		userRole := r.Context().Value(roleCtx).(string)
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(userRole))
+	})
+
+	// Middleware under test
+	middleware := handler.AuthMiddleware(nextHandler)
+
+	t.Run("Missing Authorization Header", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		rec := httptest.NewRecorder()
+
+		middleware.ServeHTTP(rec, req)
+
+		assert.Equal(t, http.StatusUnauthorized, rec.Code)
+		assert.Contains(t, rec.Body.String(), "Authorization token is required")
+	})
+
+	t.Run("Malformed Authorization Header", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		req.Header.Set(authorizationHeader, "Bearer") // Missing token
+		rec := httptest.NewRecorder()
+
+		middleware.ServeHTTP(rec, req)
+
+		assert.Equal(t, http.StatusUnauthorized, rec.Code)
+		assert.Contains(t, rec.Body.String(), "invalid auth header")
+	})
+
+	t.Run("Invalid Token", func(t *testing.T) {
+		mockAuth.On("ParseToken", "invalid-token").Return("", errors.New("invalid token"))
+
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		req.Header.Set(authorizationHeader, "Bearer invalid-token")
+		rec := httptest.NewRecorder()
+
+		middleware.ServeHTTP(rec, req)
+
+		assert.Equal(t, http.StatusUnauthorized, rec.Code)
+		assert.Contains(t, rec.Body.String(), "invalid auth header")
+		mockAuth.AssertCalled(t, "ParseToken", "invalid-token")
+	})
+
+	t.Run("Valid Token", func(t *testing.T) {
+		mockAuth.On("ParseToken", "valid-token").Return("admin", nil)
+
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		req.Header.Set(authorizationHeader, "Bearer valid-token")
+		rec := httptest.NewRecorder()
+
+		middleware.ServeHTTP(rec, req)
+
+		assert.Equal(t, http.StatusOK, rec.Code)
+		assert.Equal(t, "admin", strings.TrimSpace(rec.Body.String()))
+		mockAuth.AssertCalled(t, "ParseToken", "valid-token")
+	})
+}
+*/

@@ -80,7 +80,7 @@ func TestMovieListPostgres_Create(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 
-			got, err := r.Create(tt.input.userRole, tt.input.movie)
+			got, err := r.Create("1", tt.input.movie)
 			if tt.wantErr {
 				assert.Error(t, err)
 			} else {
@@ -259,7 +259,7 @@ func TestMovieListPostgres_Delete(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 
-			err := r.Delete(tt.input.userRole, tt.input.movId)
+			err := r.Delete("1", tt.input.movId)
 			if tt.wantErr {
 				assert.Error(t, err)
 			} else {
@@ -348,7 +348,7 @@ func TestMovieListPostgres_Update(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 
-			err := r.Update(tt.input.userRole, tt.input.movId, tt.input.input)
+			err := r.Update("1", tt.input.movId, tt.input.input)
 			if tt.wantErr {
 				assert.Error(t, err)
 			} else {

@@ -27,7 +27,6 @@ func (h *Handler) createMovielist(w http.ResponseWriter, r *http.Request) {
 		clientErr(w, http.StatusMethodNotAllowed, "only post method allowed")
 		return
 	}
-	//retrievedValue := "1" // when testing uncomment
 	retrievedValue := r.Context().Value(roleCtx).(string) // when testing comment
 	var input movieapi.MovieList
 	err := json.NewDecoder(r.Body).Decode(&input)

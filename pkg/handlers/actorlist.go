@@ -33,7 +33,6 @@ func (h *Handler) createActorlist(w http.ResponseWriter, r *http.Request) {
 		clientErr(w, http.StatusBadRequest, "invalid input body")
 		return
 	}
-	// retrievedValue := "1" // when testing uncomment
 	retrievedValue := r.Context().Value(roleCtx).(string) // when testing comment
 	id, err := h.services.ActorList.CreateActor(retrievedValue, input)
 	if err != nil {
@@ -97,7 +96,6 @@ func (h *Handler) updateActorList(w http.ResponseWriter, r *http.Request) {
 		clientErr(w, http.StatusMethodNotAllowed, "only post method allowed")
 		return
 	}
-	//retrievedValue := "1" // when testing uncomment
 	retrievedValue := r.Context().Value(roleCtx).(string) // when testing comment
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil || id < 1 {

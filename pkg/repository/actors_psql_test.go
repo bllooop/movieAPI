@@ -76,7 +76,7 @@ func TestActorListPostgres_Create(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 
-			got, err := r.CreateActor(tt.input.userRole, tt.input.actor)
+			got, err := r.CreateActor("1", tt.input.actor)
 			if tt.wantErr {
 				assert.Error(t, err)
 			} else {
@@ -183,7 +183,7 @@ func TestActorListPostgres_Delete(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 
-			err := r.Delete(tt.input.userRole, tt.input.actorId)
+			err := r.Delete("1", tt.input.actorId)
 			if tt.wantErr {
 				assert.Error(t, err)
 			} else {
@@ -271,7 +271,7 @@ func TestActorListPostgres_Update(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 
-			err := r.Update(tt.input.userRole, tt.input.actorId, tt.input.input)
+			err := r.Update("1", tt.input.actorId, tt.input.input)
 			if tt.wantErr {
 				assert.Error(t, err)
 			} else {

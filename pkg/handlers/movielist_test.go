@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"bytes"
+	"context"
 	"errors"
 	"movieapi"
 	"movieapi/pkg/service"
@@ -80,6 +81,8 @@ func TestHandler_CreateMovie(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+			ctx := context.WithValue(req.Context(), roleCtx, userRole)
+			req = req.WithContext(ctx)
 			testCase.mockBehavior(repo, userRole, testCase.inputMovie)
 			w := httptest.NewRecorder()
 			hh := http.HandlerFunc(handler.createMovielist)
