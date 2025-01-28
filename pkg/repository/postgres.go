@@ -14,7 +14,9 @@ const (
 	movListItemTable = "movlistitem"
 )
 
+/*
 const (
+
 	host = "db"   //comment when starting on local without docker-compose
 	port = "5432" //comment when starting on local without docker-compose
 	//host     = "localhost" //uncomment when starting on local without docker-compose
@@ -23,10 +25,21 @@ const (
 	dbname   = "postgres"
 	sslmode  = "disable"
 	password = "54321"
-)
 
-func NewPostgresDB() (*sql.DB, error) {
-	db, err := sql.Open("postgres", fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", user, password, host, port, dbname, sslmode))
+)
+*/
+type Config struct {
+	Host     string
+	Port     string
+	Username string
+	Password string
+	DBname   string
+	SSLMode  string
+}
+
+func NewPostgresDB(cfg Config) (*sql.DB, error) {
+
+	db, err := sql.Open("postgres", fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s", cfg.Host, cfg.Port, cfg.Username, cfg.DBname, cfg.Password, cfg.SSLMode))
 	if err != nil {
 		return nil, err
 	}
